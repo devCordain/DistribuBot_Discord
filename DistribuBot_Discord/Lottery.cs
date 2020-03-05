@@ -6,9 +6,13 @@ namespace DistribuBot_Discord
     public class Lottery
     {
         private List<TicketHolder> ticketHolders;
-        public Lottery()
+
+        public string Name { get; private set; }
+
+        public Lottery(string name)
         {
             ticketHolders = new List<TicketHolder>();
+            Name = name;
         }
 
         public string UpdateNumberOfTickets(string name, int modifier)
@@ -27,27 +31,36 @@ namespace DistribuBot_Discord
 
         public string DrawWinner()
         {
-            var random = new Random();
-            var numberOfTickets = 0;
-            var participants = "";
-            foreach (var ticketHolder in ticketHolders)
+            try
             {
-                participants += ticketHolder.Name + ", Tickets: " + ticketHolder.Tickets;
-                numberOfTickets += ticketHolder.Tickets;
-            }
-
-            var winningTicketNumber = random.Next(1, numberOfTickets);
-            numberOfTickets = 0;
-
-            foreach (var ticketHolder in ticketHolders)
-            {
-                numberOfTickets += ticketHolder.Tickets;
-                if (numberOfTickets >= winningTicketNumber)
+                var random = new Random();
+                var numberOfTickets = 0;
+                var participants = "";
+                foreach (var ticketHolder in ticketHolders)
                 {
-                    return participants + $". The winning ticket number was {winningTicketNumber}, belonging to {ticketHolder.Name}"; 
+                    participants += $"{ticketHolder.Name}({numberOfTickets + 1} -> {numberOfTickets + ticketHolder.Tickets}, {ticketHolder.Tickets} gold)";
+                    numberOfTickets += ticketHolder.Tickets;
                 }
+
+                var winningTicketNumber = random.Next(1, numberOfTickets);
+                numberOfTickets = 0;
+
+                foreach (var ticketHolder in ticketHolders)
+                {
+                    numberOfTickets += ticketHolder.Tickets;
+                    if (numberOfTickets >= winningTicketNumber)
+                    {
+                        return participants + $". The winning ticket number was {winningTicketNumber}, belonging to {ticketHolder.Name}"; 
+                    }
+                }
+                return "Unable to pick winner";
             }
-            return "Unable to pick winner";
+            catch (Exception)
+            {
+                return "Lottery closed (No tickets)";
+            }
+
+
         }
     }
 }
