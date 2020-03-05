@@ -29,8 +29,10 @@ namespace DistribuBot_Discord
         {
             var random = new Random();
             var numberOfTickets = 0;
+            var participants = "";
             foreach (var ticketHolder in ticketHolders)
             {
+                participants += ticketHolder.Name + ", Tickets: " + ticketHolder.Tickets;
                 numberOfTickets += ticketHolder.Tickets;
             }
 
@@ -42,7 +44,7 @@ namespace DistribuBot_Discord
                 numberOfTickets += ticketHolder.Tickets;
                 if (numberOfTickets >= winningTicketNumber)
                 {
-                    return $"The winning ticket number was {winningTicketNumber}, belonging to {ticketHolder.Name}"; 
+                    return participants + $". The winning ticket number was {winningTicketNumber}, belonging to {ticketHolder.Name}"; 
                 }
             }
             return "Unable to pick winner";
